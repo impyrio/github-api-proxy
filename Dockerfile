@@ -1,14 +1,21 @@
 #
 # Dockerfile for GitHub proxy server
 #
-FROM nginx:1.13.12
+FROM alpine:3.6
 LABEL author="Patrick Kohler"
 
-ARG AUTH
+RUN apk add --no-cache nginx-mod-http-lua
 
+# Delete default config
+RUN rm -r /etc/nginx/conf.d && rm /etc/nginx/nginx.conf
+
+# Create folder for PID file
+RUN mkdir -p /run/nginx
+
+# Add our nginx conf
 RUN mkdir -p /data/nginx/cache
-
-COPY nginx.conf /etc/nginx
-RUN sed -i "s/!AUTH/'${AUTH}'/g" /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx
 
 EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
