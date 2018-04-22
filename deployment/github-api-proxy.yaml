@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: github-api-proxy
+  namespace: default
+  labels:
+    app: github-api-proxy
+    tier: resource
+spec:
+  selector:
+    matchLabels:
+      run: github-api-proxy
+  replicas: 1
+  selector:
+    matchLabels:
+      app: github-api-proxy
+      tier: resource
+  template:
+    metadata:
+      name: github-api-proxy
+      labels:
+        app: github-api-proxy
+        tier: resource
+    spec:
+      containers:
+      - name: github-api-proxy
+        image: ${AWS_ECR_BASE}/github-api-proxy
+        ports:
+          - name: http
+            containerPort: 80
+        env:
+          - name: AUTH
+            valueFrom:
+              secretKeyRef:
+                name: github-api-auth
+                key: authorization
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: github-api-proxy
+spec:
+  selector:
+    app: github-api-proxy
+    tier: resource
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
