@@ -7,9 +7,6 @@ metadata:
     app: github-api-proxy
     tier: resource
 spec:
-  selector:
-    matchLabels:
-      run: github-api-proxy
   replicas: 1
   selector:
     matchLabels:
@@ -44,8 +41,8 @@ spec:
 
 ---
 
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
   name: github-api-proxy
 spec:
@@ -53,6 +50,6 @@ spec:
     app: github-api-proxy
     tier: resource
   ports:
-  - protocol: TCP
+  - name: http
     port: 8000
-    targetPort: 8000
+    targetPort: http
