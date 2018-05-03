@@ -24,16 +24,23 @@ spec:
     spec:
       containers:
       - name: github-api-proxy
-        image: ${AWS_ECR_BASE}/github-api-proxy
+        image: impyrio/github-api-proxy:${DOCKER_IMAGE_TAG}
         ports:
           - name: http
-            containerPort: 80
+            containerPort: 8000
         env:
           - name: AUTH
             valueFrom:
               secretKeyRef:
                 name: github-api-auth
                 key: authorization
+        resources:
+          requests:
+            cpu: 0m
+            memory: 50Mi
+          limits:
+            cpu: 50m
+            memory: 100Mi
 
 ---
 
@@ -47,5 +54,5 @@ spec:
     tier: resource
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
+    port: 8000
+    targetPort: 8000

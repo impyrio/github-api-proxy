@@ -1,5 +1,5 @@
 #
-# Dockerfile for GitHub proxy server
+# Dockerfile for GitHub API proxy server
 #
 FROM alpine:3.6
 LABEL author="Patrick Kohler"
@@ -16,6 +16,6 @@ RUN mkdir -p /run/nginx
 RUN mkdir -p /data/nginx/cache
 COPY ./nginx.conf /etc/nginx
 
-EXPOSE 80
+EXPOSE 8000
 
 CMD ["nginx", "-g", "daemon off;"]
