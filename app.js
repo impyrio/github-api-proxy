@@ -36,6 +36,9 @@ app.use(session({
 app.use('/a', proxy(host, {
   proxyReqOptDecorator(proxyReqOpts, srcReq) {
     proxyReqOpts.headers['Authorization'] = archon_auth;
+    if (!proxyReqOpts.headers['User-Agent'])
+      proxyReqOpts.headers['User-Agent'] = 'github-api-proxy';
+    
     return proxyReqOpts;
   }
 }));
@@ -43,9 +46,15 @@ app.use('/a', proxy(host, {
 app.use('/u', proxy(host, {
   proxyReqOptDecorator(proxyReqOpts, srcReq) {
     const token = srcReq.session.access_token;
-    if (token) {
+    if (token)
       proxyReqOpts.headers['Authorization'] = 'token ' + token;
-    }
+
+    if (!proxyReqOpts.headers['User-Agent'])
+      proxyReqOpts.headers['User-Agent'] = 'github-api-proxy';
+    
+    // keep our cookies to ourselves!
+    delete proxyReqOpts.headers.cookie;
+    
     return proxyReqOpts;
   }
 }));
