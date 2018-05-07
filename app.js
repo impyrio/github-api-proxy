@@ -13,7 +13,9 @@ const mongo_config = {
   databaseName: process.env.MONGO_DB,
   collection: process.env.MONGO_COLLECTION
 };
-const cookie_maxAge = process.env.COOKIE_MAXAGE || 60 * 60 * 24 * 7; // 1 wk
+const cookie = {
+  maxAge: parseInt(process.env.COOKIE_MAXAGE) || 1000*60*60*24*7 // 1 wk
+};
 const session_secret = process.env.SESSION_SECRET || 'keyboard cat';
 
 const app = express();
@@ -27,10 +29,10 @@ store.on('error', function(error) {
 });
 app.use(session({
   secret: session_secret,
-  cookie: {maxAge: cookie_maxAge},
-  store: store,
-  resave: true,
-  saveUninitialized: true
+  cookie,
+  store,
+  resave: false,
+  saveUninitialized: false
 }));
 
 app.use('/a', proxy(host, {
