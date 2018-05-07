@@ -1,21 +1,23 @@
 #
 # Dockerfile for GitHub API proxy server
 #
-FROM alpine:3.6
+FROM node:9.11.1-alpine
 LABEL author="Patrick Kohler"
 
-RUN apk add --no-cache nginx-mod-http-lua
+# Set source directory
+RUN mkdir -p /app
+WORKDIR /app
 
-# Delete default config
-RUN rm -r /etc/nginx/conf.d && rm /etc/nginx/nginx.conf
+# Install dependencies
+COPY ["package.json", "package-lock.json", "./"]
+RUN npm install \
+ && npm cache clean --force \
+ && mv /app/node_modules /node_modules
 
-# Create folder for PID file
-RUN mkdir -p /run/nginx
+# Copy app source
+COPY app.js .
 
-# Add our nginx conf
-RUN mkdir -p /data/nginx/cache
-COPY ./nginx.conf /etc/nginx
-
+ENV PORT 8000
 EXPOSE 8000
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD [ "npm", "start" ]

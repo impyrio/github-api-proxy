@@ -7,51 +7,42 @@ Archon process to make fully authenticated calls to the GitHub API, without
 having access to any authentication info that could be otherwise exposed.
 
 ## Troubleshooting
-You can run your own copy of this image for local testing with the following procedure.
 
- 1. Check out this project.
- 2. Create a [personal access token][1].
- 3. Build the Docker image, baking in the auth token into the image:
+This proxy provides two authorization modes: *as Archon* or *as user*. 
 
-        docker build -t github-api-proxy .
+### Run *as Archon* Setup
 
- 4. Create and start the docker contianer using one of the following methods:
+In *as Archon* mode, the proxy uses a single global access tokens to authorize
+all requests.
 
-    **Using [Kitematic][2]**
-
-     1. Open Kitematic
-     2. In the container list to the left, select '+ NEW'
-     3. From the menu on the upper right, select 'My Images'
-     4. Find `github-api-proxy` in the list of images, and click the 'Create'
-        button.
-     5. Now with the newly created container selected, select 'Settings'
-     6. Under *Environment Variables*, add a new row with:
-
-        | Key  | Value |
-        |------|-------|
-        | AUTH | token &lt;your PAT> |
-     7. Select 'Home', then click the link to open a web browser to verify the
-        Docker instance is correctly running.
-    
-    **Using the CLI**
-
-     1. Create a container for the generated image:
+ 1. Create a [personal access token for your GitHub account][1].
+ 2. Create and start a new container running this image with the 
+    [`docker run`][2] command.
         
-            docker create \
-                --env AUTH='token <your PAT>' \
-                --name github-api-proxy \
-                --publish-all \
-                github-api-proxy
+        docker run \
+            --name github-api-proxy \
+            --env AUTH='token <your PAT>' \
+            --detach \
+            --publish-all \
+            impyrio/github-api-proxy:latest
 
-     2. Start the container:
+ 3. Take note of the (randomly assigned) port number mapped to the
+    container port `8000/tcp`:
 
-            docker start github-api-proxy
-    
-     3. Take note of the (randomly assigned) port number mapped to the 
-        container port `80/tcp`:
+        docker port github-api-proxy 
+ 
+ 4. Open a web browser and point it to `http://localhost:&lt;port&gt;/a`
 
-            docker port github-api-proxy 
-     4. Open a web browser and point it to http://localhost:&lt;port>/
+    > **NOTE:** if running [Kitematic][3], you can simply click the link in the
+    > upper-right corner of the image's preview pane.
+
+### Run *as Uase* Setup
+
+In *as user* mode, the proxy uses a different access token per session, so you
+must first configure session support.
+
+ 1. **TBD**
 
  [1]: https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
- [2]: https://kitematic.com/
+ [2]: https://docs.docker.com/engine/reference/commandline/run/
+ [3]: https://kitematic.com/

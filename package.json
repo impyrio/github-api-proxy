@@ -1,0 +1,17 @@
+{
+  "name": "github-api-proxy",
+  "version": "1.0.0",
+  "description": "Simple proxy for the GitHub API",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "connect-mongodb-session": "^2.0.2",
+    "express": "^4.16.3",
+    "express-http-proxy": "^1.2.0",
+    "express-session": "^1.15.6"
+  }
+}
