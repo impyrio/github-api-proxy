@@ -46,10 +46,11 @@ app.use('/a', proxy(host, {
 }));
 
 app.use('/u', proxy(host, {
-  proxyReqOptDecorator(proxyReqOpts, srcReq) {
-    const token = srcReq.session.access_token;
+  proxyReqOptDecorator(proxyReqOpts, req) {
+    const token = req.session.access_token;
+
     if (token)
-      proxyReqOpts.headers['Authorization'] = 'token ' + token;
+      proxyReqOpts.headers['Authorization'] = `token ${token}`;
 
     if (!proxyReqOpts.headers['User-Agent'])
       proxyReqOpts.headers['User-Agent'] = 'github-api-proxy';
