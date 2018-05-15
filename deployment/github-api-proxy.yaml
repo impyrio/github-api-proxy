@@ -31,6 +31,26 @@ spec:
               secretKeyRef:
                 name: github-api-auth
                 key: authorization
+          - name: MONGO_URI
+            valueFrom:
+              secretKeyRef:
+                name: session-config
+                key: mongo-uri
+          - name: MONGO_DB
+            valueFrom:
+              secretKeyRef:
+                name: session-config
+                key: mongo-db
+          - name: MONGO_COLLECTION
+            valueFrom:
+              secretKeyRef:
+                name: session-config
+                key: mongo-collection
+          - name: SESSION_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: session-config
+                key: session-secret
         resources:
           requests:
             cpu: 0m
